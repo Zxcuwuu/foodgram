@@ -2,7 +2,7 @@ from django.db import migrations
 
 
 def create_tags(apps, schema_editor):
-    Tag = apps.get_model("api", "Tag")
+    Tag = apps.get_model("recipes", "Tag")
     Tag.objects.get_or_create(name="Завтрак", slug="breakfast")
     Tag.objects.get_or_create(name="Обед", slug="lunch")
     Tag.objects.get_or_create(name="Ужин", slug="dinner")
@@ -11,7 +11,7 @@ def create_tags(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("api", "0001_initial"),
+        ("recipes", "0001_initial"),
     ]
 
     operations = [

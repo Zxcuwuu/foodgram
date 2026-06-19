@@ -8,16 +8,15 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .filters import RecipeFilter
-from .models import (
+from recipes.models import (
     Favorite,
     Ingredient,
     Recipe,
     RecipeIngredient,
     ShoppingCart,
-    Subscription,
     Tag,
-    User,
 )
+from users.models import Subscription, User
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (
     AvatarSerializer,

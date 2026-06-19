@@ -4,7 +4,8 @@ import os
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 
-from api.models import Ingredient, Recipe, RecipeIngredient, Tag, User
+from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
+from users.models import User
 
 
 SAMPLE_IMAGE = (
