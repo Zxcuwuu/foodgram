@@ -14,8 +14,6 @@ from recipes.models import (
     ShoppingCart,
     Tag,
 )
-from users.models import Subscription
-
 from .fields import Base64ImageField
 
 
@@ -51,10 +49,7 @@ class UserSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         if not request or not request.user.is_authenticated:
             return False
-        return Subscription.objects.filter(
-            user=request.user,
-            author=obj,
-        ).exists()
+        return request.user.subscriptions.filter(author=obj).exists()
 
     def get_avatar(self, obj):
         return absolute_file_url(self.context.get("request"), obj.avatar)

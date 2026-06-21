@@ -16,7 +16,7 @@ from recipes.models import (
     ShoppingCart,
     Tag,
 )
-from users.models import Subscription, User
+from users.models import User
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (
     AvatarSerializer,
@@ -109,8 +109,7 @@ class UserViewSet(
     def subscribe(self, request, pk=None):
         author = self.get_object()
         if request.method == "DELETE":
-            deleted, _ = Subscription.objects.filter(
-                user=request.user,
+            deleted, _ = request.user.subscriptions.filter(
                 author=author,
             ).delete()
             if not deleted:
@@ -124,8 +123,7 @@ class UserViewSet(
                 {"errors": "Нельзя подписаться на себя."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        subscription, created = Subscription.objects.get_or_create(
-            user=request.user,
+        subscription, created = request.user.subscriptions.get_or_create(
             author=author,
         )
         if not created:
