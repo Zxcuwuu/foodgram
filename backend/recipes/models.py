@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import UniqueConstraint
 
@@ -9,6 +10,7 @@ MEASUREMENT_UNIT_MAX_LENGTH = 64
 RECIPE_NAME_MAX_LENGTH = 256
 MIN_COOKING_TIME = 1
 MIN_INGREDIENT_AMOUNT = 1
+MAX_INGREDIENT_AMOUNT = 32000
 
 
 class Tag(models.Model):
@@ -75,7 +77,12 @@ class RecipeIngredient(models.Model):
         on_delete=models.CASCADE,
         related_name="ingredient_recipes",
     )
-    amount = models.PositiveSmallIntegerField()
+    amount = models.PositiveSmallIntegerField(
+        validators=[
+            MinValueValidator(MIN_INGREDIENT_AMOUNT),
+            MaxValueValidator(MAX_INGREDIENT_AMOUNT),
+        ]
+    )
 
     class Meta:
         constraints = [

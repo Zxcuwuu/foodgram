@@ -5,6 +5,7 @@ from rest_framework.authtoken.models import Token
 from recipes.models import (
     Favorite,
     Ingredient,
+    MAX_INGREDIENT_AMOUNT,
     MIN_COOKING_TIME,
     MIN_INGREDIENT_AMOUNT,
     Recipe,
@@ -248,7 +249,10 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 class IngredientAmountSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    amount = serializers.IntegerField(min_value=MIN_INGREDIENT_AMOUNT)
+    amount = serializers.IntegerField(
+        min_value=MIN_INGREDIENT_AMOUNT,
+        max_value=MAX_INGREDIENT_AMOUNT,
+    )
 
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
