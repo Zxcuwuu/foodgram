@@ -5,8 +5,11 @@ from rest_framework.authtoken.models import Token
 from recipes.models import (
     Favorite,
     Ingredient,
+    MIN_COOKING_TIME,
+    MIN_INGREDIENT_AMOUNT,
     Recipe,
     RecipeIngredient,
+    RECIPE_NAME_MAX_LENGTH,
     ShoppingCart,
     Tag,
 )
@@ -245,7 +248,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
 
 class IngredientAmountSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    amount = serializers.IntegerField(min_value=1)
+    amount = serializers.IntegerField(min_value=MIN_INGREDIENT_AMOUNT)
 
 
 class RecipeWriteSerializer(serializers.ModelSerializer):
@@ -256,7 +259,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         allow_empty=False,
     )
     image = Base64ImageField(required=False, allow_empty_file=False)
-    cooking_time = serializers.IntegerField(min_value=1)
+    cooking_time = serializers.IntegerField(min_value=MIN_COOKING_TIME)
 
     class Meta:
         model = Recipe
@@ -272,7 +275,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             "name": {
                 "required": True,
                 "allow_blank": False,
-                "max_length": 256,
+                "max_length": RECIPE_NAME_MAX_LENGTH,
             },
             "text": {"required": True, "allow_blank": False},
         }

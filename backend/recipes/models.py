@@ -3,9 +3,17 @@ from django.db import models
 from django.db.models import UniqueConstraint
 
 
+TAG_NAME_MAX_LENGTH = 32
+INGREDIENT_NAME_MAX_LENGTH = 128
+MEASUREMENT_UNIT_MAX_LENGTH = 64
+RECIPE_NAME_MAX_LENGTH = 256
+MIN_COOKING_TIME = 1
+MIN_INGREDIENT_AMOUNT = 1
+
+
 class Tag(models.Model):
-    name = models.CharField(max_length=32, unique=True)
-    slug = models.SlugField(max_length=32, unique=True)
+    name = models.CharField(max_length=TAG_NAME_MAX_LENGTH, unique=True)
+    slug = models.SlugField(max_length=TAG_NAME_MAX_LENGTH, unique=True)
 
     class Meta:
         ordering = ("id",)
@@ -15,8 +23,8 @@ class Tag(models.Model):
 
 
 class Ingredient(models.Model):
-    name = models.CharField(max_length=128)
-    measurement_unit = models.CharField(max_length=64)
+    name = models.CharField(max_length=INGREDIENT_NAME_MAX_LENGTH)
+    measurement_unit = models.CharField(max_length=MEASUREMENT_UNIT_MAX_LENGTH)
 
     class Meta:
         ordering = ("id",)
@@ -37,7 +45,7 @@ class Recipe(models.Model):
         on_delete=models.CASCADE,
         related_name="recipes",
     )
-    name = models.CharField(max_length=256)
+    name = models.CharField(max_length=RECIPE_NAME_MAX_LENGTH)
     image = models.ImageField(upload_to="recipes/images/")
     text = models.TextField()
     cooking_time = models.PositiveSmallIntegerField()

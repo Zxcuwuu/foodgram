@@ -3,10 +3,13 @@ from django.db import models
 from django.db.models import UniqueConstraint
 
 
+USER_NAME_MAX_LENGTH = 150
+
+
 class User(AbstractUser):
     email = models.EmailField("email address", unique=True)
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
+    first_name = models.CharField(max_length=USER_NAME_MAX_LENGTH)
+    last_name = models.CharField(max_length=USER_NAME_MAX_LENGTH)
     avatar = models.ImageField(upload_to="users/", blank=True, null=True)
 
     USERNAME_FIELD = "email"
