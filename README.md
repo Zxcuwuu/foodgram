@@ -4,7 +4,7 @@ Foodgram — веб-приложение для публикации рецеп�
 
 ## Сайт
 
-Проект доступен по адресу: http://158.160.201.43/
+Проект доступен по адресу: http://zxcuwuu.ddns.net/
 
 ## Технологии
 
@@ -53,7 +53,7 @@ DB_HOST=db
 DB_PORT=5432
 SECRET_KEY=replace-me
 DEBUG=False
-ALLOWED_HOSTS=localhost,127.0.0.1
+ALLOWED_HOSTS=localhost,127.0.0.1,158.160.201.43,zxcuwuu.ddns.net
 DJANGO_SUPERUSER_USERNAME=admin
 DJANGO_SUPERUSER_EMAIL=admin@example.com
 DJANGO_SUPERUSER_PASSWORD=admin
