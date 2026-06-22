@@ -1,17 +1,24 @@
-import base64
+from io import BytesIO
 import os
 
 from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
+from PIL import Image, ImageDraw, ImageFont
 
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 from users.models import User
 
 
-SAMPLE_IMAGE = (
-    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD"
-    "///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNo"
-    "AAAAggCByxOyYQAAAABJRU5ErkJggg=="
+IMAGE_SIZE = (900, 520)
+IMAGE_COLORS = (
+    ("#f7c873", "#d86c4a"),
+    ("#9dd7c6", "#2f7f78"),
+    ("#f1a7a1", "#a84b5f"),
+    ("#c4d87f", "#5f8f47"),
+    ("#b8c9ff", "#4d66aa"),
+    ("#ffd1dc", "#b6577a"),
+    ("#ffdd8f", "#9a5f28"),
+    ("#c7ead9", "#4c927a"),
 )
 
 
@@ -145,23 +152,23 @@ class Command(BaseCommand):
                 "ingredients": ingredients[:2],
             },
         ]
-        for data in recipes:
-            image_content = ContentFile(
-                base64.b64decode(SAMPLE_IMAGE),
-                name=f"{data['name']}.png",
-            )
+        for index, data in enumerate(recipes):
+            image_content = self.create_recipe_image(data["name"], index)
             recipe, created = Recipe.objects.get_or_create(
                 name=data["name"],
                 author=data["author"],
                 defaults={
                     "text": data["text"],
                     "cooking_time": data["cooking_time"],
-                    "image": image_content,
                 },
             )
+            recipe.image.save(image_content.name, image_content, save=False)
+            recipe.text = data["text"]
+            recipe.cooking_time = data["cooking_time"]
+            recipe.save()
+            recipe.tags.set(data["tags"])
             if not created:
                 continue
-            recipe.tags.set(data["tags"])
             RecipeIngredient.objects.bulk_create(
                 RecipeIngredient(
                     recipe=recipe,
@@ -170,3 +177,47 @@ class Command(BaseCommand):
                 )
                 for index, ingredient in enumerate(data["ingredients"])
             )
+
+    def create_recipe_image(self, name, index):
+        primary, secondary = IMAGE_COLORS[index % len(IMAGE_COLORS)]
+        image = Image.new("RGB", IMAGE_SIZE, primary)
+        draw = ImageDraw.Draw(image)
+        width, height = IMAGE_SIZE
+
+        for y in range(height):
+            ratio = y / height
+            color = tuple(
+                int(
+                    int(primary.lstrip("#")[i : i + 2], 16) * (1 - ratio)
+                    + int(secondary.lstrip("#")[i : i + 2], 16) * ratio
+                )
+                for i in (0, 2, 4)
+            )
+            draw.line([(0, y), (width, y)], fill=color)
+
+        draw.ellipse(
+            (270, 95, 630, 455),
+            fill="#fff7ec",
+            outline="#ffffff",
+            width=8,
+        )
+        draw.ellipse(
+            (345, 170, 555, 380),
+            fill=secondary,
+            outline="#ffffff",
+            width=5,
+        )
+        draw.rounded_rectangle((90, 110, 135, 420), radius=22, fill="#ffffff")
+        draw.rounded_rectangle((765, 110, 810, 420), radius=22, fill="#ffffff")
+        draw.ellipse((190, 80, 260, 150), fill="#ffffff")
+        draw.ellipse((640, 370, 710, 440), fill="#ffffff")
+
+        font = ImageFont.load_default()
+        draw.rounded_rectangle((70, 390, 830, 488), radius=28, fill="#ffffff")
+        draw.text((110, 426), name, fill="#222222", font=font)
+
+        buffer = BytesIO()
+        image.save(buffer, format="PNG")
+        buffer.seek(0)
+        safe_name = name.replace(" ", "_")
+        return ContentFile(buffer.read(), name=f"{safe_name}.png")
