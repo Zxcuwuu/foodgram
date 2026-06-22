@@ -188,8 +188,8 @@ class Command(BaseCommand):
             ratio = y / height
             color = tuple(
                 int(
-                    int(primary.lstrip("#")[i : i + 2], 16) * (1 - ratio)
-                    + int(secondary.lstrip("#")[i : i + 2], 16) * ratio
+                    int(primary.lstrip("#")[i: i + 2], 16) * (1 - ratio)
+                    + int(secondary.lstrip("#")[i: i + 2], 16) * ratio
                 )
                 for i in (0, 2, 4)
             )
