@@ -37,7 +37,13 @@ class RecipeAdmin(admin.ModelAdmin):
         "favorites_count",
     )
     list_filter = ("tags",)
-    search_fields = ("name", "author__email", "author__username")
+    search_fields = (
+        "name",
+        "author__email",
+        "author__username",
+        "author__first_name",
+        "author__last_name",
+    )
     inlines = (RecipeIngredientInline,)
 
     @admin.display(description="Добавлений в избранное")
@@ -47,3 +53,4 @@ class RecipeAdmin(admin.ModelAdmin):
 
 admin.site.register(Favorite)
 admin.site.register(ShoppingCart)
+admin.site.register(RecipeIngredient)

@@ -197,8 +197,8 @@ function App() {
           getOrders();
         })
         .catch((err) => {
+          localStorage.removeItem("token");
           setLoggedIn(false);
-          history.push("/recipes");
         });
     } else {
       setLoggedIn(false);

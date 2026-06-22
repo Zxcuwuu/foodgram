@@ -1,3 +1,3 @@
-login: admin
+login: admin@example.com
 password: admin
 vm_name: r-backend-vm-897965943
