@@ -5,6 +5,7 @@ from rest_framework.authtoken.models import Token
 from recipes.models import (
     Favorite,
     Ingredient,
+    MAX_COOKING_TIME,
     MAX_INGREDIENT_AMOUNT,
     MIN_COOKING_TIME,
     MIN_INGREDIENT_AMOUNT,
@@ -258,7 +259,10 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         allow_empty=False,
     )
     image = Base64ImageField(required=False, allow_empty_file=False)
-    cooking_time = serializers.IntegerField(min_value=MIN_COOKING_TIME)
+    cooking_time = serializers.IntegerField(
+        min_value=MIN_COOKING_TIME,
+        max_value=MAX_COOKING_TIME,
+    )
 
     class Meta:
         model = Recipe
